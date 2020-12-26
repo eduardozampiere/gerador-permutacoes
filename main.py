@@ -1,16 +1,52 @@
 class Permutation:
     def __init__(self, words: list):
-        self.words = words
-        self.size = len(words)
+        words.sort()
+        self.__words = words.copy()
+        self.__size = len(words)
+        self.__compare()
 
-    def get_size(self):
-        return self.size
+    def __compare(self):
+        file = open('dictionary.txt', 'r')
+        words = [i.replace('\n', '').lower() for i in file.readlines()]
+        words.sort()
+        self.__real_words = []
+        for i, word in enumerate(self.__words):
+            if self.__binary_search(words, word):
+                if not word in self.__real_words:
+                    self.__real_words.append(word)
 
-    def get_words(self):
-        return self.words
+    def __binary_search(self, arr: list, goal: str) -> bool:
+        init = 0
+        end = len(arr)
+        while True:
+            m = init + int((end - init) / 2)
+            if arr[m] == goal:
+                return True
 
-    def get_word_size(self):
-        return len(self.words[0])
+            if arr[m] > goal:
+                end = m
+
+            elif arr[m] < goal:
+                init = m
+
+            if end - init <= 1:
+                return False
+
+    def get_size(self) -> int:
+        return self.__size
+
+    def get_words(self) -> [str]:
+        return self.__words
+
+    def get_word_size(self) -> int:
+        return len(self.__words[0])
+
+    def get_real_words(self) -> [str]:
+        return self.__real_words
+
+    def get_size_real(self) -> int:
+        return len(self.__real_words)
+
 
 def permut(word: str = '', letters: str = '', max: int = None, save: list = None) -> None:
     n = len(letters)
@@ -37,6 +73,6 @@ def make_permutations(l: str = '', m: int = None) -> Permutation:
 
 
 if __name__ == '__main__':
-    perm = make_permutations('iracema')
-    print(perm.get_size())
-    print(perm.get_words())
+    perm = make_permutations('amora')
+    print(perm.get_size_real())
+    print(perm.get_real_words())
